@@ -1,7 +1,7 @@
 <import name="my-tabbar" src="./tabbar"></import>
 <import name="device" src="../component/Device"></import>
 <import name="key" src="../component/Key"></import>
-<import name="message" src="./device"></import>
+<import name="message" src="../component/Message"></import>
 <import name="settings" src="./device"></import>
 <template>
   <div class="wrapper">
