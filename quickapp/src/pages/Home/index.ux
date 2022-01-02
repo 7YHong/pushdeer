@@ -66,6 +66,7 @@ export default {
 
 .wrapper {
   .flex-box-mixins(column, center, center);
+  height: 100%;
 
   .stack {
     flex-grow: 1;
