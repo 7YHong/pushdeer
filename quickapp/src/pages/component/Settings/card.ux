@@ -1,7 +1,11 @@
 <template>
   <div class="card">
-    <text style="font-size: 30px;">{{ label }}</text>
-    <text class="opt" @click="{{btnHandler}}">{{ optName }}</text>
+    <text style="font-size: 30px">{{ label }}</text>
+    <text
+      class="opt"
+      @click="{{btnHandler}}"
+      >{{ optName }}</text
+    >
   </div>
 </template>
 
@@ -9,7 +13,11 @@
 import clipboard from '@system.clipboard'
 export default {
 
-  props: ['label', 'optName', 'btnHandler'],
+  props: ['idx', 'label', 'optName'],
+
+  btnHandler() {
+    this.$dispatch('SettingsItemClick', this.idx)
+  },
 
   onInit() {
     // console.log('settings-card',this.label,this.optName,this.btnHandler)
