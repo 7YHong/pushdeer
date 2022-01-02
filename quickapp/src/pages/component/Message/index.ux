@@ -10,8 +10,10 @@
       />
     </div>
     <div if="{{!collapsed}}" class="pushmsg-region">
-      <textarea class="textarea"></textarea>
-      <text class="pushbtn">推送测试</text>
+      <textarea class="textarea" @change="onTextAreaChange">{{
+        input
+      }}</textarea>
+      <text class="pushbtn" @click="onPushBtnClick">推送测试</text>
     </div>
     <list>
       <list-item
@@ -30,6 +32,7 @@ export default {
   data: {
     collapsed: false,
     supportType: ['text', 'markdown'],
+    input: '',
     msgs: [
       {
         name: "Default", created_at: "5分钟前", type: "text",
@@ -53,6 +56,19 @@ export default {
 
   onArrowBtnClick() {
     this.collapsed = !this.collapsed
+  },
+  onTextAreaChange(e) {
+    // 只能在change事件里取值，不知道作者怎么想的。。。
+    this.input = e.text
+  },
+  onPushBtnClick() {
+    if (this.input.length == 0) {
+      $utils.showToast("消息内容为空")
+      return
+    }
+    console.log('message', 'onPushBtnClick', this.input)
+    this.msgs.unshift({ name: "本设备", created_at: "刚刚", type: "text", text: this.input })
+    this.input = ""
   },
 
   onInit() {
