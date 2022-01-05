@@ -1,4 +1,4 @@
-# PushDeerOS
+# PushDeer
 
 PushDeer开源版，可以自行架设的无APP推送服务（WIP，当前项目只实现了后端API，其他部分正在施工🚧）
 
@@ -14,10 +14,10 @@ PushDeer开源版，可以自行架设的无APP推送服务（WIP，当前项目
 
 |功能|领取人|预期完成时间|最低版本兼容|本周进度|
 |-|-|-|-|-|
-|iOS/MacApp+Clip开发|[Hext123](https://github.com/Hext123)|2022年1月20日|iOS14|界面绘制|
-|Android客户端|[WolfHugo](https://github.com/alone-wolf)|2022年2月24日|5.1|推送DSK测试·MiPUSH|
-|快应用|[7YHong](https://github.com/7YHong)|2022年2月27日|-|-|
-|API完善和更新|[古俊杰](https://github.com/ilovintit)|配合客户端同步更新|-|-|
+|iOS/MacApp+Clip开发|[Hext123](https://github.com/Hext123)|2022年1月20日|iOS14|界面完成，开始对接接口|
+|Android客户端|[WolfHugo](https://github.com/alone-wolf)|2022年2月24日|5.1|API调试通过，准备写业务逻辑|
+|快应用|[7YHong](https://github.com/7YHong)|2022年2月27日|-|完成大部分页面展示，准备完成markdown、image类消息界面|
+|API完善和更新|[古俊杰](https://github.com/ilovintit)|配合客户端同步更新|-|添加自动生成swgger文档功能中|
 
 ## 相关项目
 
@@ -134,6 +134,8 @@ PushDeer主要面向以下三类用户
 运行 `docker-compose up -d`，启动API。默认访问地址为`http://127.0.0.1:8800`。可修改`docker-compose.yml`调整端口。
 
 ### API 说明
+
+[在线文档（Swagger）](https://ilovintit.github.io/pushdeer-api-doc/#/) 
 
 API_BASE=http://127.0.0.1:8800
 
