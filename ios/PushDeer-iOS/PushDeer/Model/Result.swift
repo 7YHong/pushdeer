@@ -20,10 +20,21 @@ struct TokenContent: Codable{
   let token: String
 }
 
+struct UserInfoContent: Codable{
+  let id: Int
+  let name: String
+  let email: String
+  let apple_id: String
+  let wechat_id: String?
+  let level: Int
+  let created_at: String
+  let updated_at: String
+}
+
 struct DeviceItem: Codable, Identifiable{
   let id: Int
   let uid: String
-  let name: String
+  var name: String
   let type: String
   let device_id: String
   let is_clip: Int
@@ -39,7 +50,10 @@ struct KeyContent: Codable{
 
 struct KeyItem: Codable, Identifiable{
   let id: Int
+  var name: String
+  let uid: String
   let key: String
+  let created_at: String
 }
 
 struct MessageContent: Codable{
@@ -52,8 +66,25 @@ struct MessageItem: Codable, Identifiable{
   let text: String
   let desp: String
   let type: String
+  let pushkey_name: String
+  let created_at: String
 }
 
 struct ActionContent: Codable{
   let message: String
+}
+
+struct PushResultContent: Codable{
+  let result: Array<String>
+}
+
+let dateFormatter = DateFormatter()
+
+extension KeyItem {
+  var createdDateStr: String {
+    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ"
+    let createdDate = dateFormatter.date(from: self.created_at)
+    dateFormatter.dateFormat = "yyyy/MM/dd"
+    return dateFormatter.string(from: createdDate ?? Date())
+  }
 }

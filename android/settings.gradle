@@ -1,0 +1,14 @@
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+//        maven { url 'https://developer.huawei.com/repo/' }
+    }
+}
+rootProject.name = "PushDeer"
+include ':app'
+include ':common'
+include ':compose'
+include ':pushdeercommon'
