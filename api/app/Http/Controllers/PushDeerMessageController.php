@@ -17,6 +17,7 @@ class PushDeerMessageController extends Controller
         $validated = $request->validate(
             [
                 'limit' => 'integer|nullable',
+                'since_id' => 'integer|nullable',
             ]
         );
 
@@ -26,7 +27,15 @@ class PushDeerMessageController extends Controller
             $limit = 100;
         }
 
-        $pd_messages = Message::where('uid', $_SESSION['uid'])->orderBy('id', 'DESC')->offset(0)->limit($limit)->get(['id', 'uid', 'text', 'desp', 'type','created_at']);
+        if (isset($validated['since_id']) && intval($validated['since_id']) > 0) {
+            $pd_sql = Message::where('uid', $_SESSION['uid'])->where('id', '>', intval($validated['since_id']));
+        } else {
+            $pd_sql = Message::where('uid', $_SESSION['uid']);
+        }
+
+        $pd_messages = $pd_sql->orderBy('id', 'DESC')->offset(0)->limit($limit)->get(['id', 'uid', 'text', 'desp', 'type','pushkey_name','created_at']);
+
+
 
         return http_result(['messages' => $pd_messages]);
     }
@@ -56,19 +65,24 @@ class PushDeerMessageController extends Controller
         $result = false;
 
         if ($key) {
+            $readkey = Str::random(32);
+            $the_message = [];
+            $the_message['uid'] = $key->uid;
+            $the_message['text'] = $validated['text'];
+            $the_message['desp'] = $validated['desp'];
+            $the_message['type'] = $validated['type'];
+            $the_message['readkey'] = $readkey;
+            $the_message['pushkey_name'] = $key->name;
+            $pd_message = Message::create($the_message);
+
             $devices = PushDeerDevice::where('uid', $key->uid)->get();
 
             foreach ($devices as $device) {
-                $readkey = Str::random(32);
-                $the_message = [];
-                $the_message['uid'] = $key->uid;
-                $the_message['text'] = $validated['text'];
-                $the_message['desp'] = $validated['desp'];
-                $the_message['readkey'] = $readkey;
-                $pd_message = Message::create($the_message);
-
                 if ($device) {
-                    $result[] = ios_send($device->is_clip, $device->device_id, $validated['text']);
+                    $func_name = $device['type'].'_send';
+                    if (function_exists($func_name)) {
+                        $result[] = $func_name($device->is_clip, $device->device_id, $validated['text'], '', env('APP_DEBUG'));
+                    }
                 }
             }
         }

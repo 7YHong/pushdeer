@@ -10,19 +10,28 @@ import SwiftUI
 /// 具有导航栏结构的基础容器View, APP内的页面基本上都可以使用它包装
 struct BaseNavigationView<Content : View> : View {
   /// 导航栏标题
-  let title: String
+  let title: LocalizedStringKey
   /// 页面主体View
   @ViewBuilder let contentView: Content
+  
+  @Environment(\.colorScheme) private var colorScheme
   
   var body: some View {
     NavigationView {
       ZStack {
-        Spacer()
-          .frame(width: .infinity, height: .infinity)
+        // VStack HStack Spacer 组合起来撑到最大
+        VStack {
+          HStack {
+            Spacer()
+          }
+          Spacer()
+        }
         contentView
       }
       .background(
-        Image("deer.gray").offset(x: -150, y: -10),
+        Image("deer.gray")
+          .offset(x: -150, y: -10)
+          .opacity(colorScheme == .dark ? 0.4 : 1),
         alignment: .bottom
       )
       .navigationBarTitle(title)
@@ -36,5 +45,6 @@ struct BaseNavigationView_Previews: PreviewProvider {
     BaseNavigationView(title: "标题") {
       Text("内容")
     }
+    .environment(\.colorScheme, .dark)
   }
 }

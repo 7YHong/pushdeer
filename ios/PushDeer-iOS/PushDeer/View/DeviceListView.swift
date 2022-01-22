@@ -14,12 +14,20 @@ struct DeviceListView: View {
     BaseNavigationView(title: "设备") {
       ScrollView {
         LazyVStack(alignment: .center) {
-          ForEach(store.devices, id: \.id) { deviceItem in
+          ForEach(store.devices.reversed()) { deviceItem in
             DeletableView(contentView: {
-              DeviceItemView(name: deviceItem.name)
+              DeviceItemView(deviceItem: deviceItem)
             }, deleteAction: {
               store.devices.removeAll { _deviceItem in
                 _deviceItem.id == deviceItem.id
+              }
+              HToast.showSuccess(NSLocalizedString("已删除", comment: "删除设备/Key/消息时提示"))
+              Task {
+                do {
+                  _ = try await HttpRequest.rmDevice(id: deviceItem.id)
+                } catch {
+                  
+                }
               }
             })
               .padding(EdgeInsets(top: 18, leading: 26, bottom: 0, trailing: 24))
@@ -28,8 +36,17 @@ struct DeviceListView: View {
         }
       }
       .navigationBarItems(trailing: Button(action: {
-        withAnimation(.easeOut) {
-//          store.devices.insert(DeviceItem(), at: 0)
+        Task {
+          let hasContains = store.devices.contains { store.deviceToken == $0.device_id }
+          if hasContains {
+            HToast.showInfo(NSLocalizedString("已添加过当前设备", comment: ""))
+            return;
+          }
+          let devices = try await HttpRequest.regDevice().devices
+          withAnimation(.easeOut) {
+            store.devices = devices
+          }
+          HToast.showSuccess(NSLocalizedString("已添加当前设备", comment: ""))
         }
       }, label: {
         Image(systemName: "plus")
@@ -37,7 +54,7 @@ struct DeviceListView: View {
       }))
     }
     .onAppear {
-      HttpRequest.getDevices()
+      HttpRequest.loadDevices()
     }
   }
 }
@@ -45,5 +62,7 @@ struct DeviceListView: View {
 struct DeviceView_Previews: PreviewProvider {
   static var previews: some View {
     DeviceListView()
+      .environmentObject(AppState.shared)
+      .environment(\.colorScheme, .dark)
   }
 }
