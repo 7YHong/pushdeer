@@ -1,4 +1,4 @@
-import $ajax from '../ajax'
+import $ajax from './ajax'
 
 /**
  * @desc 在实际开发中，您可以将 baseUrl 替换为您的请求地址前缀；
@@ -8,7 +8,7 @@ import $ajax from '../ajax'
  *
  * 备注：如果您不需要发起请求，删除 apis 目录，以及 app.ux 中引用即可；
  */
-const baseUrl = 'https://api.exampel.com/'
+const baseUrl = 'http://192.168.7.190:8800/'
 
 export default {
   getApi(data) {
@@ -16,5 +16,8 @@ export default {
   },
   postOtherApi(data) {
     return $ajax.post(`${baseUrl}your-project-api`, data)
+  },
+  login() {
+    return $ajax.get(`${baseUrl}login/fake`)
   }
 }
