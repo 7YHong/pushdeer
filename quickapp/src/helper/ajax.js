@@ -28,17 +28,20 @@ function fetchPromise(params) {
         url: params.url,
         method: params.method,
         data: params.data,
-        success: res => {
-          const content = JSON.parse(res.data)
-          content.code === 0 ?
-            resolve(content)
-            : reject({ code: content.code, msg: content.error })
-        },
-        fail: (msg, code) => {
-          console.log(msg, code);
-          reject({msg,code})
-        },
+        responseType: 'json',
       })
+      .then(res => {
+        // console.log('ajax then', res)
+        const data = res.data.data
+        data.code === 0 ?
+          resolve(data.content)
+          : reject({ code: data.code, msg: data.error })
+      })
+      .catch(err => {
+        console.warn('ajax catch', err.data, err.code);
+        reject({ msg: err.data, code: err.code })
+      })
+
   })
 }
 

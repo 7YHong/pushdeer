@@ -1,17 +1,33 @@
 <script>
-/**
- * 应用级别的配置，供所有页面公用
- */
+  /**
+   * 应用级别的配置，供所有页面公用
+   */
 
-const $utils = require('./helper/utils').default
-const $apis = require('./helper/apis').default
+  const $utils = require('./helper/utils').default
+  const $apis = require('./helper/apis').default
+  const $storage = require('@system.storage')
 
-/* @desc: 注入方法至全局 global,以便页面调用 */
-const hook2global = Object.getPrototypeOf(global) || global;
-hook2global.$utils = $utils
-hook2global.$apis = $apis
+  /* @desc: 注入方法至全局 global,以便页面调用 */
+  const hook2global = Object.getPrototypeOf(global) || global;
+  hook2global.$utils = $utils
+  hook2global.$apis = $apis
+  hook2global.$token = ''
 
-export default {
-  onCreate() {}
-}
+  $storage.get({
+    key: 'token',
+    success: function (data) {
+      console.log(`get token = ${data} from storage success`)
+      hook2global.$token = data
+      if ($token.length === 0) {
+        console.log('no storage')
+      }
+    },
+    fail: function (data, code) {
+      console.warn(`get token from storage fail, code = ${code}`)
+    }
+  })
+
+  export default {
+    onCreate() { }
+  }
 </script>

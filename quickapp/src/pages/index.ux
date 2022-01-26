@@ -3,7 +3,7 @@
   <!-- template里只能有一个根节点 -->
   <div class="wrapper">
     <div class="logo">
-      <img src="/assets/images/index-logo.svg" />
+      <image src="/assets/images/index-logo.svg" />
     </div>
     <div class="btn-group">
       <text class="btn-wx" @click="onWxSignBtnClick">Sign in with WeChat</text>
@@ -17,6 +17,7 @@
 
 <script>
   import router from '@system.router'
+  import storage from '@system.storage'
 
   export default {
     // 页面级组件的数据模型，影响传入数据的覆盖机制：private内定义的属性不允许被覆盖
@@ -26,14 +27,25 @@
     onWxSignBtnClick() {
       $apis.login()
         .then((res) => {
-          const {token}=res
-          console.log('index',res,token)
-          // router.replace({
-          //   uri: '/pages/Home',
-          // })
+          const { token } = res
+          console.log('index', res, token)
+          if (token.length === 0) {
+            throw { msg: 'token为空' }
+          }
+          $token = token
+          storage.set({
+            key: 'token',
+            value: token,
+            fail: function (data, code) {
+              console.warn(`save token fail, code = ${code}`)
+            }
+          })
+          router.replace({
+            uri: '/pages/Home'
+          })
         })
         .catch(err => {
-          console.log('indexcatch',err)
+          console.log('indexcatch', err)
           $utils.showToast(err)
         })
     },
