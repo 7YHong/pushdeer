@@ -8,16 +8,18 @@ import $ajax from './ajax'
  *
  * 备注：如果您不需要发起请求，删除 apis 目录，以及 app.ux 中引用即可；
  */
-const baseUrl = 'http://192.168.7.190:8800/'
+const baseUrl = 'https://pushdeer.qiyanghong.cn:5443/'
+
+let token=""
 
 export default {
-  getApi(data) {
-    return $ajax.get(`${baseUrl}your-project-api`, data)
-  },
-  postOtherApi(data) {
-    return $ajax.post(`${baseUrl}your-project-api`, data)
+  setToken(t){
+    token=t
   },
   login() {
-    return $ajax.get(`${baseUrl}login/fake`)
+    return $ajax.get(`${baseUrl}login/fake`).then(res=>res.token)
+  },
+  userinfo(){
+    return $ajax.post(`${baseUrl}user/info`,{token:'fbfc50d56590d300db72e67df36b3ccb'})
   }
 }

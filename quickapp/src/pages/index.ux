@@ -24,11 +24,10 @@
     private: {
     },
 
-    onWxSignBtnClick() {
-      $apis.login()
-        .then((res) => {
-          const { token } = res
-          console.log('index', res, token)
+    async onWxSignBtnClick() {
+      API.login()
+        .then((token) => {
+          console.log('index ', token)
           if (token.length === 0) {
             throw { msg: 'token为空' }
           }
@@ -41,7 +40,7 @@
             }
           })
           router.replace({
-            uri: '/pages/Home'
+            uri: 'pages/component'
           })
         })
         .catch(err => {
@@ -51,6 +50,13 @@
     },
 
     onInit() {
+      (async () => {
+        let token = await promiseFactory(storage.get, { key: 'token' })
+          .catch((data, code) => {
+            console.warn(`get token from storage fail, code = ${code}`)
+          })
+        console.log(`home: get token = ${token} from storage success`)
+      })()
     },
   }
 </script>

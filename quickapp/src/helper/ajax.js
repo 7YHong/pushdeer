@@ -25,9 +25,7 @@ function fetchPromise(params) {
   return new Promise((resolve, reject) => {
     $fetch
       .fetch({
-        url: params.url,
-        method: params.method,
-        data: params.data,
+        ...params,
         responseType: 'json',
       })
       .then(res => {
