@@ -32,7 +32,7 @@
     "logLevel": "debug"
   },
   "router": {
-    "entry": "pages",
+    "entry": "pages/component",
     "pages": {
       "pages": {
         "component": "index"
@@ -40,6 +40,9 @@
       "pages/Home": {
         "component": "index",
         "launchMode": "singleTask"
+      },
+      "pages/component": {
+        "component": "devpage"
       }
     }
   },
