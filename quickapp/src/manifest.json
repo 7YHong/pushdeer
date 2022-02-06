@@ -20,6 +20,9 @@
     },
     {
       "name": "system.storage"
+    },
+    {
+      "name": "system.device"
     }
   ],
   "permissions": [
@@ -27,12 +30,11 @@
       "origin": "*"
     }
   ],
-  "template/official": "demo-template",
   "config": {
     "logLevel": "debug"
   },
   "router": {
-    "entry": "pages/component",
+    "entry": "pages/swipe",
     "pages": {
       "pages": {
         "component": "index"
@@ -43,6 +45,9 @@
       },
       "pages/component": {
         "component": "devpage"
+      },
+      "pages/swipe":{
+        "component": "index"
       }
     }
   },
