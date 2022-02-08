@@ -16,43 +16,62 @@
 </template>
 
 <script>
-export default {
-  data: {
-    devs: [
-      { icon: "/assets/images/device-ipad.svg", name: "Easy’s iPad(当前设备)" },
-      { icon: "/assets/images/device-ipad.svg", name: "备用机iPhone2" },
-    ],
-  },
-
-  onPlusBtnClick() {
-    // $utils.showToast('aaaaa')
-    this.devs.push({ icon: "/assets/images/device-iphone.svg", name: "备用机iPhone" + (this.devs.length + 1) })
-  },
-
-  onInit() {
-    console.log('device', 'init')
+  const devIcon = {
+    "ios": "/assets/images/device-iphone.png",
+    "default": "/assets/images/device-iphone.png",
   }
-}
+
+  let devs = [ ]
+  export default {
+    data: {
+      devs: [],
+    },
+
+    onPlusBtnClick() {
+      // $utils.showToast('aaaaa')
+      this.devs.push({ icon: "/assets/images/device-iphone.svg", name: "备用机iPhone" + (this.devs.length + 1) })
+    },
+
+    onInit() {
+      console.log('device', 'init');
+      (async () => {
+        let devList = await API.deviceList()
+        console.log('devList: ', JSON.stringify(devList));
+        let devs = devList.map((item) => {
+          return {
+            name: item.name,
+            icon: item.type in devIcon ? devIcon[item.type] : devIcon["default"]
+          }
+        })
+        console.log('devs: ', JSON.stringify(devs));
+        // [{"uid":"1","is_clip":0,"device_id":"f787bbf3-fffd-a2d7-fef9-716ff1bf1809","name":"新设备","id":1,"type":"ios"},{"uid":"1","is_clip":1,"device_id":"f787bbf3-fffd-a2d7-fef9-716ff1bf1809","name":"easychen+new","id":2,"type":"ios"}]
+        this.devs = devs
+      })()
+    },
+    onReady() {
+      console.log('device', 'onready')
+    },
+  }
 </script>
 
 <style lang="less">
-@import '../../../assets/styles/style.less';
+  @import '../../../assets/styles/style.less';
 
-.wrapper {
-  .flex-box-mixins(column, flex-start, center);
-  width: 100%;
-  height: 100%;
-  padding-top: 84px;
+  .wrapper {
+    .flex-box-mixins(column, flex-start, center);
+    width: 100%;
+    height: 100%;
+    padding-top: 84px;
 
-  .header {
-    margin-bottom: 24px;
-    width: 80%;
-    justify-content: space-between;
+    .header {
+      margin-bottom: 24px;
+      width: 80%;
+      justify-content: space-between;
 
-    text {
-      font-size: 48px;
-      color: #000000;
+      text {
+        font-size: 48px;
+        color: #000000;
+      }
     }
   }
-}
 </style>

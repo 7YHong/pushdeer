@@ -34,7 +34,7 @@
     "logLevel": "debug"
   },
   "router": {
-    "entry": "pages/swipe",
+    "entry": "pages",
     "pages": {
       "pages": {
         "component": "index"
