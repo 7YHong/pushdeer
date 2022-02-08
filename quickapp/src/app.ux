@@ -30,7 +30,7 @@
     $apis.setToken(token)
     let userinfo = await $apis.userInfo()
     userinfo.token = token
-    hook2global.userinfo = userinfo
+    hook2global.$userinfo = userinfo
     _promiseFactory($storage.set, { key: 'token', value: token })
     appInitC.postMessage(1)
     appInitC.close()
