@@ -17,7 +17,17 @@
 
 <script>
   import router from '@system.router'
-  import storage from '@system.storage'
+
+  const appInitC = new BroadcastChannel('init')
+  appInitC.onmessage = ({ data }) => {
+    console.log(`index: received app init message:${data}`);
+    if (data === 1) {
+      appInitC.close()
+      router.replace({
+        uri: 'pages/Home'
+      })
+    }
+  }
 
   export default {
     // 页面级组件的数据模型，影响传入数据的覆盖机制：private内定义的属性不允许被覆盖
@@ -26,37 +36,12 @@
 
     async onWxSignBtnClick() {
       API.login()
-        .then((token) => {
-          console.log('index ', token)
-          if (token.length === 0) {
-            throw { msg: 'token为空' }
-          }
-          $token = token
-          storage.set({
-            key: 'token',
-            value: token,
-            fail: function (data, code) {
-              console.warn(`save token fail, code = ${code}`)
-            }
-          })
-          router.replace({
-            uri: 'pages/component'
-          })
-        })
-        .catch(err => {
-          console.log('indexcatch', err)
-          $utils.showToast(err)
+        .then(token => {
+          appInitC.postMessage(token)
         })
     },
 
     onInit() {
-      (async () => {
-        let token = await promiseFactory(storage.get, { key: 'token' })
-          .catch((data, code) => {
-            console.warn(`get token from storage fail, code = ${code}`)
-          })
-        console.log(`home: get token = ${token} from storage success`)
-      })()
     },
   }
 </script>
