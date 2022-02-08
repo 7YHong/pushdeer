@@ -9,7 +9,11 @@
     </div>
     <list style="width: 80%">
       <list-item type="devitem" for="{{ dev in devs}}">
-        <dev-card dev-obj="{{ dev }}" idx="{{ $idx }}"></dev-card>
+        <dev-card
+          slot="content"
+          dev-obj="{{ dev }}"
+          idx="{{ $idx }}"
+        ></dev-card>
       </list-item>
     </list>
   </div>
@@ -23,16 +27,14 @@
     "default": "/assets/images/device-iphone.png",
   }
 
-  let devs = []
+  const handleDevResult = (data) => data.map((item) => {
+    return {
+      id: item.id,
+      name: item.name,
+      icon: item.type in devIcon ? devIcon[item.type] : devIcon["default"],
+    }
+  })
 
-  const handleDevResult = (data) => {
-    devs = data.map((item) => {
-      return {
-        name: item.name,
-        icon: item.type in devIcon ? devIcon[item.type] : devIcon["default"]
-      }
-    })
-  }
   export default {
     data: {
       devs: [],
@@ -42,24 +44,29 @@
       try {
         let devId = await promiseFactory(device.getDeviceId, {})
           .then(res => res.deviceId)
-        let devList = await API.deviceReg($userinfo.name+'的手机', devId)
-        console.log('devList: ', JSON.stringify(devList));
-        handleDevResult(devList)
-        this.devs = devs
+        let devList = await API.deviceReg($userinfo.name + '的手机', devId)
+        // console.log('devList: ', JSON.stringify(devList));
+        this.devs = handleDevResult(devList)
       } catch (e) {
-        $utils.showToast(e.name+':'+e.message)
+        $utils.showToast(e.name + ':' + e.message)
       }
+    },
+
+    async handleDeleteClick(idx) {
+      const id = this.devs[idx].id
+      console.log(`home: del item: idx=${idx}, id=${id}`);
+      this.devs.splice(idx)
+      API.deviceRemove(id)
     },
 
     onInit() {
       console.log('device', 'init');
       (async () => {
         let devList = await API.deviceList()
-        console.log('devList: ', JSON.stringify(devList));
-        handleDevResult(devList)
-        console.log('devs: ', JSON.stringify(devs));
+        // console.log('devList: ', JSON.stringify(devList));
+        this.devs = handleDevResult(devList)
+        // console.log('devs: ', JSON.stringify(this.devs));
         // [{"uid":"1","is_clip":0,"device_id":"f787bbf3-fffd-a2d7-fef9-716ff1bf1809","name":"新设备","id":1,"type":"ios"},{"uid":"1","is_clip":1,"device_id":"f787bbf3-fffd-a2d7-fef9-716ff1bf1809","name":"easychen+new","id":2,"type":"ios"}]
-        this.devs = devs
       })()
     },
     onReady() {
