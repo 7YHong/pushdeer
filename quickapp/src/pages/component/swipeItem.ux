@@ -1,9 +1,10 @@
 <template>
   <stack
     class="swipe_item"
-    ontouchstart="dealTouchStart"
-    ontouchmove="dealTouchMove"
-    ontouchend="dealTouchEnd"
+    @touchstart="dealTouchStart"
+    @touchmove="dealTouchMove"
+    @touchend="dealTouchEnd"
+    @touchcancel="dealTouchEnd"
   >
     <div id="right">
       <slot name="right"></slot>
@@ -21,6 +22,7 @@
   }
 </style>
 <script>
+let $animation = null
   module.exports = {
     data: {
       movestartX: 0,
@@ -38,6 +40,7 @@
         this.$element('right').getBoundingClientRect({
           success(res) {
             that.btnAreaWidth=res.width
+            // console.log(`res=${JSON.stringify(res)}`);
           }
         })
       }, 500);
@@ -50,7 +53,7 @@
 
     dealTouchMove(e) {
       let [deltaX, contentX] = this.calX(e.touches[0].clientX)
-      // console.info(`dealTouchMove moveX= ${moveX}, dis= ${dis}`);
+      // console.info(`dealTouchMove deltaX= ${deltaX},contentX= ${contentX}`);
       if (Math.abs(deltaX) < this.threshold) {
         return;
       }
@@ -79,8 +82,9 @@
 
 
     animate(value1, value2, immediately = false) {
+      // console.log(`animate from ${value1} to ${value2}, immediately=${immediately}`)
       let options = {
-        duration: immediately ? 0 : 500,
+        duration: immediately ? 0 : 300,
         easing: 'linear',
         delay: 0,
         fill: 'forwards',
@@ -97,8 +101,8 @@
             translateX: `${value2}px`,
           }
         }];
-      let animation = this.$element('content').animate(frames, options);
-      animation.play();
+      let $animation = this.$element('content').animate(frames, options);
+      $animation.play();
     },
   }
 </script>

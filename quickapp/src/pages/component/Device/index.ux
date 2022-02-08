@@ -1,4 +1,5 @@
 <import name="dev-card" src="./card"></import>
+<import name="swipe-item" src="../swipeItem"></import>
 <template>
   <div class="wrapper">
     <!-- <text class="title">device</text>
@@ -9,11 +10,20 @@
     </div>
     <list style="width: 80%">
       <list-item type="devitem" for="{{ dev in devs}}">
-        <dev-card
-          slot="content"
-          dev-obj="{{ dev }}"
-          idx="{{ $idx }}"
-        ></dev-card>
+        <swipe-item>
+          <dev-card
+            slot="content"
+            dev-obj="{{ dev }}"
+            idx="{{ $idx }}"
+          ></dev-card>
+          <div
+            slot="right"
+            style="height: 60px;width: 100px;padding: 0 20px;justify-content: center;"
+            @click="handleDeleteClick($idx)"
+          >
+            <image src="/assets/images/trash.png"></image>
+          </div>
+        </swipe-item>
       </list-item>
     </list>
   </div>
@@ -54,7 +64,7 @@
 
     async handleDeleteClick(idx) {
       const id = this.devs[idx].id
-      console.log(`home: del item: idx=${idx}, id=${id}`);
+      console.log(`device: del item: idx=${idx}, id=${id}`);
       this.devs.splice(idx)
       API.deviceRemove(id)
     },
