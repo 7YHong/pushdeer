@@ -13,9 +13,19 @@ struct MainView: View {
   
   var body: some View {
     TabView.init(selection: $store.tabSelectedIndex) {
+      
+      MessageListView()
+        .tabItem({Label("消息",systemImage: "message")}).onTapGesture {
+        }
+        .tag(2)
+      
       DeviceListView()
         .tabItem {
-          Label("设备",systemImage: "ipad.and.iphone")
+          if #available(iOS 15.0, *) {
+            Label("设备",systemImage: "ipad.and.iphone")
+          } else {
+            Label("设备",systemImage: "laptopcomputer.and.iphone")
+          }
         }
         .tag(0)
       
@@ -24,11 +34,6 @@ struct MainView: View {
           Label("Key",systemImage: "key")
         }
         .tag(1)
-      
-      MessageListView()
-        .tabItem({Label("消息",systemImage: "message")}).onTapGesture {
-        }
-        .tag(2)
       
       SettingsView()
         .tabItem{

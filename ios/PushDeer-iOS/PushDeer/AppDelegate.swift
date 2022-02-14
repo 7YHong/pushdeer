@@ -7,11 +7,13 @@
 
 import UIKit
 import UserNotifications
+import IQKeyboardManagerSwift
 
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
     
+    // 注册通知
     let center = UNUserNotificationCenter.current()
     center.delegate = self
     center.requestAuthorization(options: [.badge, .sound, .alert]) { granted, error in
@@ -19,10 +21,19 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     }
     application.registerForRemoteNotifications()
     
+    // 首次网络请求提示
     Task {
-      // APP启动后要先调一个无用接口, 用于触发国行手机的网络授权弹框, 未授权前调的接口会直接失败. (提前触发网络授权弹窗)
-      _ = try await HttpRequest.fake()
+      let notFirstStart = UserDefaults.standard.bool(forKey: "PushDeer_notFirstStart")
+      if !notFirstStart {
+        // APP首次启动后要先调一个无用接口, 用于触发国行手机的网络授权弹框, 未授权前调的接口会直接失败. (提前触发网络授权弹窗)
+        _ = try await HttpRequest.fake()
+        UserDefaults.standard.set(true, forKey: "PushDeer_notFirstStart")
+      }
     }
+    
+    // IQ键盘管理
+    IQKeyboardManager.shared.enable = false // 键盘与输入框的距离管理 禁用
+    IQKeyboardManager.shared.enableAutoToolbar = true // 键盘上方添加的工具栏 启用
     
     return true
   }
@@ -31,6 +42,10 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     let deviceTokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
     print("deviceToken: ", deviceTokenString)
     AppState.shared.deviceToken = deviceTokenString
+  }
+  
+  func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+    print("didFailToRegisterForRemoteNotificationsWithError: ", error)
   }
   
   func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
