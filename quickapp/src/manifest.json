@@ -23,6 +23,9 @@
     },
     {
       "name": "system.device"
+    },
+    {
+      "name": "service.push"
     }
   ],
   "permissions": [
@@ -46,7 +49,7 @@
       "pages/component": {
         "component": "devpage"
       },
-      "pages/swipe":{
+      "pages/swipe": {
         "component": "index"
       }
     }

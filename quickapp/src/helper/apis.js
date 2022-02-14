@@ -25,7 +25,7 @@ export default {
     return to($ajax.get(`${baseUrl}login/fake`).then(res => res.token))
   },
   userInfo() {
-    return to($ajax.post(`${baseUrl}user/info`, { token }))
+    return $ajax.post(`${baseUrl}user/info`, { token })
   },
   // device
   deviceReg(name, device_id) {

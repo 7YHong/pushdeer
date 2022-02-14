@@ -16,18 +16,9 @@
 </template>
 
 <script>
+  import storage from '@system.storage'
   import router from '@system.router'
-
-  const appInitC = new BroadcastChannel('init')
-  appInitC.onmessage = ({ data }) => {
-    console.log(`index: received app init message:${data}`);
-    if (data === 1) {
-      appInitC.close()
-      router.replace({
-        uri: 'pages/Home'
-      })
-    }
-  }
+  import push from '@service.push'
 
   export default {
     // 页面级组件的数据模型，影响传入数据的覆盖机制：private内定义的属性不允许被覆盖
@@ -36,12 +27,61 @@
 
     async onWxSignBtnClick() {
       API.login()
-        .then(token => {
-          appInitC.postMessage(token)
-        })
+
+        .then(token => this.loginSuccess(token))
+    },
+
+    async loginSuccess(token) {
+      console.log('index: loginsuccess');
+      promiseFactory(storage.set, { key: 'token', value: token })
+      let regIdFromStorage = await promiseFactory(storage.get, { key: 'regId' })
+      API.setToken(token)
+      let userinfo = await API.userInfo()
+      userinfo.token = token
+      this.$app.$def.userinfo = userinfo
+      
+      router.replace({
+        uri: 'pages/Home'
+      })
+
+      push.subscribe({
+        success: function ({ regId }) {
+          console.log(`push.subscribe succeeded, regIdFromStorage=${regIdFromStorage}, regId=${regId}`);
+          console.log('todo: 若regId发生改变，需要上报服务器');
+          if (regIdFromStorage !== regId) {
+            // TODO 上报新的推送ID
+            promiseFactory(storage.set, { key: 'regId', value: regId })
+          }
+        },
+        fail: function (data, code) {
+          console.log("push.subscribe failed, result data=" + JSON.stringify(data) + ", code=" + code);
+        },
+        complete: function () {
+          console.log("push.subscribe completed"); 
+        }
+      })
+      push.on({
+        callback: function (ret) {
+          console.log('received pass through message, ret = ' + JSON.stringify(ret));
+        }
+      })
     },
 
     onInit() {
+      (async () => {
+        let token = await promiseFactory(storage.get, { key: 'token' })
+        console.log(`index: get token = ${token} from storage success`)
+        if (token.length !== 0) {
+          return this.loginSuccess(token)
+        }
+      })()
+        .catch(e => {
+          console.log('catch:' + e);
+          $utils.showToast(e)
+        })
+        .finally(() => {
+          console.log('index: init complete');
+        })
     },
   }
 </script>
