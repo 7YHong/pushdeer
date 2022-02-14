@@ -14,22 +14,14 @@ struct EditableText: View {
     
   }
   
-  func textField() -> some View {
+  var body: some View {
     TextField(placeholder, text: $value, onCommit: {
       print("修改文本:", value)
       self.onCommit(value)
     })
       .font(.system(size: 20))
       .foregroundColor(Color.accentColor)
-  }
-  
-  var body: some View {
-    if #available(iOS 15.0, *) {
-      textField()
-        .submitLabel(.done)
-    } else {
-      textField()
-    }
+      .submitLabelDone()
   }
 }
 

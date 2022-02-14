@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,10 +20,18 @@ import com.pushdeer.os.ui.compose.componment.KeyItem
 import com.pushdeer.os.ui.compose.componment.ListBottomBlankItem
 import com.pushdeer.os.ui.compose.componment.SwipeToDismissItem
 import com.pushdeer.os.ui.navigation.Page
+import kotlinx.coroutines.launch
 
 @ExperimentalMaterialApi
 @Composable
 fun KeyListPage(requestHolder: RequestHolder) {
+
+    LaunchedEffect(Unit) {
+        requestHolder.coroutineScope.launch {
+            requestHolder.pushDeerViewModel.keyList()
+        }
+    }
+
     MainPageFrame(
         titleStringId = Page.Keys.labelStringId,
         onSideIconClick = { requestHolder.key.gen() }
@@ -40,9 +49,11 @@ fun KeyListPage(requestHolder: RequestHolder) {
         }else{
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 items(
-                    requestHolder.pushDeerViewModel.keyList,
+                    requestHolder.pushDeerViewModel.keyList.sortedBy { it.id },
                     key = { item: PushKey -> item.id }) { pushKey: PushKey ->
-                    SwipeToDismissItem(onAction = { requestHolder.key.remove(pushKey) }
+                    SwipeToDismissItem(
+                        requestHolder = requestHolder,
+                        onAction = { requestHolder.key.remove(pushKey) }
                     ) {
                         KeyItem(key = pushKey, requestHolder = requestHolder)
                     }

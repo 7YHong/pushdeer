@@ -26,8 +26,14 @@ Route::any('/login/fake', 'App\Http\Controllers\PushDeerUserController@fakeLogin
 // 通过 apple 返回的 idtoken 登入
 Route::post('/login/idtoken', 'App\Http\Controllers\PushDeerUserController@login');
 
+// 通过 微信客户端返回的 code 登入
+Route::post('/login/wecode', 'App\Http\Controllers\PushDeerUserController@wechatLogin');
+
+// 通过 微信客户端返回的 code 换取 unionid 等信息
+Route::any('/login/unoinid', 'App\Http\Controllers\PushDeerUserController@wecode2unionid');
+
 // 推送消息
-Route::any('/message/push', 'App\Http\Controllers\PushDeerMessageController@push');
+Route::middleware('json.request')->any('/message/push', 'App\Http\Controllers\PushDeerMessageController@push');
 
 
 // 自动登入，适用于通过 token 进行操作的接口
@@ -60,5 +66,7 @@ Route::middleware('auto.login')->group(function () {
 
 
         Route::post('/user/info', 'App\Http\Controllers\PushDeerUserController@info');
+
+        Route::post('/user/merge', 'App\Http\Controllers\PushDeerUserController@merge');
     });
 });

@@ -15,7 +15,12 @@ class LogDog {
     var timestamp:Long = System.currentTimeMillis()
 
     override fun toString(): String {
-        return "id:$id level:$level entity:$entity\nlog:$log time:${timestamp.toTimestamp()}"
+        return "id:$id\n" +
+                "level:$level\n" +
+                "entity:$entity\n" +
+                "event:$event\n" +
+                "log:$log\n" +
+                "time:${timestamp.toTimestamp()}"
     }
 
 //    @Composable
