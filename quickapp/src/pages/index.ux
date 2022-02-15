@@ -32,6 +32,7 @@
     },
 
     async loginSuccess(token) {
+      let that=this
       console.log('index: loginsuccess');
       promiseFactory(storage.set, { key: 'token', value: token })
       let regIdFromStorage = await promiseFactory(storage.get, { key: 'regId' })
@@ -39,15 +40,12 @@
       let userinfo = await API.userInfo()
       userinfo.token = token
       this.$app.$def.userinfo = userinfo
-      
-      router.replace({
-        uri: 'pages/Home'
-      })
 
       push.subscribe({
         success: function ({ regId }) {
           console.log(`push.subscribe succeeded, regIdFromStorage=${regIdFromStorage}, regId=${regId}`);
-          console.log('todo: 若regId发生改变，需要上报服务器');
+          // console.log('todo: 若regId发生改变，需要上报服务器');
+          that.$app.$def.pushRegId = regId
           if (regIdFromStorage !== regId) {
             // TODO 上报新的推送ID
             promiseFactory(storage.set, { key: 'regId', value: regId })
@@ -57,13 +55,17 @@
           console.log("push.subscribe failed, result data=" + JSON.stringify(data) + ", code=" + code);
         },
         complete: function () {
-          console.log("push.subscribe completed"); 
+          console.log("push.subscribe completed");
         }
       })
       push.on({
         callback: function (ret) {
           console.log('received pass through message, ret = ' + JSON.stringify(ret));
         }
+      })
+
+      router.replace({
+        uri: 'pages/Home'
       })
     },
 
@@ -72,7 +74,7 @@
         let token = await promiseFactory(storage.get, { key: 'token' })
         console.log(`index: get token = ${token} from storage success`)
         if (token.length !== 0) {
-          return this.loginSuccess(token)
+          await this.loginSuccess(token)
         }
       })()
         .catch(e => {
