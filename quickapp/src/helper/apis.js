@@ -24,6 +24,9 @@ export default {
   login() {
     return to($ajax.get(`${baseUrl}login/fake`).then(res => res.token))
   },
+  wxLogin(code) {
+    return $ajax.post(`${baseUrl}login/wecode`, { code }).then(res => res.token)
+  },
   userInfo() {
     return $ajax.post(`${baseUrl}user/info`, { token })
   },

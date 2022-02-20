@@ -26,6 +26,12 @@
         },
         {
             "name": "service.push"
+        },
+        {
+            "name": "service.wxaccount",
+            "params": {
+                "appId": "YOUR_APPID"
+            }
         }
     ],
     "permissions": [
