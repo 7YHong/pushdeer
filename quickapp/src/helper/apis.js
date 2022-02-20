@@ -29,18 +29,18 @@ export default {
   },
   // device
   deviceReg(name, device_id) {
-    return to($ajax.post(`${baseUrl}device/reg`, { token, is_clip: 1, name, device_id }))
+    return $ajax.post(`${baseUrl}device/reg`, { token, is_clip: 1, name, device_id })
       .then(res => res.devices)
   },
   deviceList() {
-    return to($ajax.post(`${baseUrl}device/list`, { token }))
+    return $ajax.post(`${baseUrl}device/list`, { token })
       .then(res => res.devices)
   },
   deviceRename(id, name) {
-    return to($ajax.post(`${baseUrl}device/rename`, { token, id, name }))
+    return $ajax.post(`${baseUrl}device/rename`, { token, id, name })
   },
   deviceRemove(id) {
-    return to($ajax.post(`${baseUrl}device/remove`, { token, id }))
+    return $ajax.post(`${baseUrl}device/remove`, { token, id })
   },
   // key
   keyGen() {
