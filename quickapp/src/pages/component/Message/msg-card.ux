@@ -3,14 +3,28 @@
 <template>
   <div class="card">
     <msg-header title="{{msg.name +' · '+ msg.created_at}}"></msg-header>
+    <swipe-item style="width: 80%">
+      <div slot="content">
+        <text if="{{msg.type === 'text'}}" class="text">{{ msg.text }}</text>
 
-    <text if="{{msg.type === 'text'}}" class="text">{{ msg.text }}</text>
+        <div if="{{msg.type ==='markdown'}}" class="text">
+          <richtext type="html">{{msg.text}}</richtext>
+        </div>
 
-    <div if="{{msg.type ==='markdown'}}" class="text">
-      <richtext type="html">{{msg.text}}</richtext>
-    </div>
-
-    <image if="{{msg.type ==='image'}}" class="image" src="{{msg.text}}"></image>
+        <image
+          if="{{msg.type ==='image'}}"
+          class="image"
+          src="{{msg.text}}"
+        ></image>
+      </div>
+      <div
+        slot="right"
+        style="height: 60px;width: 100px;justify-content: center;"
+        @click="onDelBtnClick($idx)"
+      >
+        <image src="/assets/images/trash.png"></image>
+      </div>
+    </swipe-item>
   </div>
 </template>
 
@@ -38,7 +52,7 @@
     width: 100%;
 
     .text {
-      width: 80%;
+      width: 100%;
       margin-top: 32px;
       color: #535353;
       font-size: 24px;

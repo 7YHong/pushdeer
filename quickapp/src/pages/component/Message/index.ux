@@ -70,9 +70,9 @@
       console.log('message', 'init');
       (async () => {
         let messageList = await API.messageList()
-        console.log('messageList: ', JSON.stringify(messageList));
+        // console.log('messageList: ', JSON.stringify(messageList));
         this.msgs = handleMessageResult(messageList)
-        console.log('msgs: ', JSON.stringify(this.msgs));
+        // console.log('msgs: ', JSON.stringify(this.msgs));
       })().catch(e => {
         console.log(e);
       })
