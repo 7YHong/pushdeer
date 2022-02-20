@@ -3,8 +3,8 @@
     "name": "pushdeer",
     "versionName": "1.0.0",
     "versionCode": 1,
-    "minPlatformVersion": 1070,
-    "icon": "/assets/images/logo.svg",
+    "minPlatformVersion": 1090,
+    "icon": "/assets/images/logo.png",
     "features": [
         {
             "name": "system.prompt"
