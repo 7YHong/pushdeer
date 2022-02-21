@@ -8,7 +8,7 @@ import $ajax from './ajax'
  *
  * 备注：如果您不需要发起请求，删除 apis 目录，以及 app.ux 中引用即可；
  */
-const baseUrl = 'https://pushdeer.qiyanghong.cn:5443/'
+const baseUrl = 'YOUR_API_ADDRESS'
 
 let token = ""
 
@@ -23,6 +23,9 @@ export default {
   },
   login() {
     return to($ajax.get(`${baseUrl}login/fake`).then(res => res.token))
+  },
+  wxLogin(code) {
+    return $ajax.post(`${baseUrl}login/wecode`, { code }).then(res => res.token)
   },
   userInfo() {
     return $ajax.post(`${baseUrl}user/info`, { token })
