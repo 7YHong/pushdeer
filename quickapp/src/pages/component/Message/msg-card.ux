@@ -3,22 +3,21 @@
 <template>
   <div class="card">
     <msg-header title="{{msg.name +' · '+ msg.created_at}}"></msg-header>
+    <div style="{{slideStyle}}">
+      
     <slide-view
       buttons="{{slideButton}}"
-      style="{{slideStyle}}"
+      style="width:100%;height:100%;"
       layer="same"
       isopen="false"
       edge="right"
       enableslide="true"
-      @ButtonClick="handleDeleteClick($idx)"
+      @ButtonClick="handleDeleteClick"
     >
       <div id="rt">
         <!-- <text if="{{msg.type === 'text'}}" class="text">{{ msg.text }}</text> -->
 
-        <div
-          if="{{msg.type ==='markdown' || msg.type === 'text'}}"
-          class="text"
-        >
+        <div if="{{msg.type !=='image'}}" class="text">
           <richtext type="html" @complete="richtextComplete">{{
             msg.text
           }}</richtext>
@@ -31,6 +30,7 @@
         ></image>
       </div>
     </slide-view>
+    </div>
   </div>
 </template>
 
@@ -41,7 +41,7 @@ export default {
   props: ['msg'],
 
   data: {
-    contentHeight: '600px',
+    contentHeight: '400px',
     slideButton: [
       {
         id: "delBtn",
@@ -57,13 +57,18 @@ export default {
   computed: {
     slideStyle() {
       let width = this.msg.type === 'image' ? '100%' : '80%'
-      // console.log('slideStyle:width=' + width + ',height=' + height);
       return `width: ${width};height:${this.contentHeight}`
     }
   },
 
   imgComplete({ height }) {
+    console.log('success', this.msg.type, height)
     this.contentHeight = height + 'px'
+  },
+
+  handleDeleteClick(){
+    console.log('delete:',this.msg.idx);
+    this.$dispatch('msgDel',this.msg.idx)
   },
 
   richtextComplete() {
