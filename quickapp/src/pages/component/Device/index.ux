@@ -1,5 +1,4 @@
 <import name="dev-card" src="./card"></import>
-<import name="swipe-item" src="../swipeItem"></import>
 <template>
   <div class="wrapper">
     <!-- <text class="title">device</text>
